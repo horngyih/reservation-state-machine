@@ -84,7 +84,6 @@ public enum RoomReservationStatus implements State<RoomReservationStatus>{
         @Override
         public RoomReservationStatus[] forwardStates(){
             return new RoomReservationStatus[]{
-                CONFIRM,
                 CIWAITING,
                 INHOUSE,
                 NOSHOW

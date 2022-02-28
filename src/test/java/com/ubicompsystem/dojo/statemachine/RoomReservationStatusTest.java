@@ -9,14 +9,20 @@ import static org.junit.runners.Parameterized.*;
 
 @RunWith(Parameterized.class)
 public class RoomReservationStatusTest {
-    @Parameters
-    public static Iterable<Object> parameters(){
-        return Arrays.asList( RoomReservationStatus.values() );
+    @Parameters(name="{1}")
+    public static Iterable<Object[]> parameters(){
+        List<Object[]> parameters = new ArrayList<>();
+        for( RoomReservationStatus status : RoomReservationStatus.values() ){
+            parameters.add( new Object[]{ status.name(), status } );
+        }
+        return parameters;
     }
 
+    String statusName;
     RoomReservationStatus testStatus;
 
-    public RoomReservationStatusTest( RoomReservationStatus status ){
+    public RoomReservationStatusTest( String name, RoomReservationStatus status ){
+        this.statusName = name;
         this.testStatus = status;
     }
 
@@ -25,17 +31,19 @@ public class RoomReservationStatusTest {
         System.out.println( "Status - " + this.testStatus.name() );
 
         System.out.println( "Forward Status - " );
-        for( State forwardState : this.testStatus.forwardStates() ){
-            if( forwardState instanceof RoomReservationStatus ){
-                System.out.println( "\t " + ((RoomReservationStatus)forwardState).name() );
-            }
+        for( RoomReservationStatus forwardState : this.testStatus.forwardStates() ){
+            System.out.println( "\t " + forwardState.name() );
         }
 
         System.out.println( "Backward Status - " );
-        for( State backwardState : this.testStatus.backwardStates() ){
-            if( backwardState instanceof RoomReservationStatus ){
-                System.out.println( "\t " + ( (RoomReservationStatus) backwardState).name() );
-            }
+        for( RoomReservationStatus backwardState : this.testStatus.backwardStates() ){
+            System.out.println( "\t " + backwardState.name() );
+        }
+
+        System.out.println( "Adjacent Status - " );
+        RoomReservationStatus[] adjacentStates = this.testStatus.adjacentStates();
+        for( RoomReservationStatus adjecentState : adjacentStates ){
+            System.out.println( "\t " + adjecentState.name() );
         }
         System.out.println( "END Status - " + this.testStatus.name() + "\n" );
     }

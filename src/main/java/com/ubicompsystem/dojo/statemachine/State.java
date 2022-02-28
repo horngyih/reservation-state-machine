@@ -1,35 +1,40 @@
 package com.ubicompsystem.dojo.statemachine;
 
+import static java.lang.System.arraycopy;
+
 import java.lang.reflect.Array;
 
 public interface State<T> {
     T[] forwardStates();
     T[] backwardStates();
     default T[] adjacentStates(){
-        T[] forwardStates = forwardStates();
-        T[] backwardStates = backwardStates();
-        int forwardStatesLength = (forwardStates!=null)?forwardStates.length:0;
-        int backwardStatesLength = (backwardStates!=null)?backwardStates.length:0;
-        Class<?> compType = null;
-        if( forwardStates != null ){
-            compType = forwardStates.getClass().getComponentType();
-        }
-
-        if( compType != null ){
-            try{
-                @SuppressWarnings("unchecked")
-                T[] adjacentStates = (T[]) Array.newInstance( compType, forwardStatesLength + backwardStatesLength );
-                if( forwardStates != null ){
-                    System.arraycopy( forwardStates, 0, adjacentStates, 0, forwardStatesLength );
-                }
-
-                if( backwardStates != null ){
-                    System.arraycopy( backwardStates, 0, adjacentStates, forwardStatesLength, backwardStatesLength );
-                }
-                return adjacentStates;
-            } catch( NegativeArraySizeException negativeArray ){
-            }
-        }
-        return null;
+        return concatenateNew(forwardStates(), backwardStates());
     };
+
+    static <Arr> Arr concatenateNew( Arr arr1, Arr arr2 ){
+        if( arr1 == null && arr2 == null ){
+            return null;
+        }
+
+        Class<?> arr1Type = (arr1!=null)?arr1.getClass().getComponentType():null;
+        Class<?> arr2Type = (arr2!=null)?arr2.getClass().getComponentType():null;
+
+        if( arr1Type == null || arr2Type == null || !arr1Type.equals(arr2Type) ){
+            throw new IllegalArgumentException( "Cannot concatenate Arrays of different Types" );
+        }
+
+        Class<?> compType = arr1Type;
+
+        int arr1Length = (arr1!=null)?Array.getLength(arr1):0;
+        int arr2Length = (arr2!=null)?Array.getLength(arr2):0;
+
+        @SuppressWarnings("unchecked")
+        Arr result = (Arr) Array.newInstance(compType, arr1Length + arr2Length);
+
+        if( arr1Length + arr2Length > 0 ){
+            arraycopy( arr1,  0, result, 0, arr1Length );
+            arraycopy( arr2, 0, result, arr1Length, arr2Length );
+        }
+        return result;
+    }
 }

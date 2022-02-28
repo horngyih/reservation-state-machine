@@ -8,15 +8,15 @@ import org.junit.runners.Parameterized;
 import static org.junit.runners.Parameterized.*;
 
 @RunWith(Parameterized.class)
-public class ReservationStatusTest {
+public class RoomReservationStatusTest {
     @Parameters
     public static Iterable<Object> parameters(){
-        return Arrays.asList( ReservationStatus.values() );
+        return Arrays.asList( RoomReservationStatus.values() );
     }
 
-    ReservationStatus testStatus;
+    RoomReservationStatus testStatus;
 
-    public ReservationStatusTest( ReservationStatus status ){
+    public RoomReservationStatusTest( RoomReservationStatus status ){
         this.testStatus = status;
     }
 
@@ -26,15 +26,15 @@ public class ReservationStatusTest {
 
         System.out.println( "Forward Status - " );
         for( State forwardState : this.testStatus.forwardStates() ){
-            if( forwardState instanceof ReservationStatus ){
-                System.out.println( "\t " + ((ReservationStatus)forwardState).name() );
+            if( forwardState instanceof RoomReservationStatus ){
+                System.out.println( "\t " + ((RoomReservationStatus)forwardState).name() );
             }
         }
 
         System.out.println( "Backward Status - " );
         for( State backwardState : this.testStatus.backwardStates() ){
-            if( backwardState instanceof ReservationStatus ){
-                System.out.println( "\t " + ( (ReservationStatus) backwardState).name() );
+            if( backwardState instanceof RoomReservationStatus ){
+                System.out.println( "\t " + ( (RoomReservationStatus) backwardState).name() );
             }
         }
         System.out.println( "END Status - " + this.testStatus.name() + "\n" );
